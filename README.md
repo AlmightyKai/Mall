@@ -1,2 +1,2 @@
-# KaiMall
+# Kai.Mall
 Open source micro service mall, based on .NET.
