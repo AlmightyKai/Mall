@@ -1,0 +1,22 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["Microservices/Almighty.Mall.Service.Search/Almighty.Mall.Service.Search.csproj", "Microservices/Almighty.Mall.Service.Search/"]
+RUN dotnet restore "Microservices/Almighty.Mall.Service.Search/Almighty.Mall.Service.Search.csproj"
+COPY . .
+WORKDIR "/src/Microservices/Almighty.Mall.Service.Search"
+RUN dotnet build "Almighty.Mall.Service.Search.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Almighty.Mall.Service.Search.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Almighty.Mall.Service.Search.dll"]
