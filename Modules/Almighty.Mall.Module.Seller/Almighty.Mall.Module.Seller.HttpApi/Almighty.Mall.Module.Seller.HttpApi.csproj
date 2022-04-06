@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Almighty.Mall.Module.Seller</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="5.2.0" />
+    <ProjectReference Include="..\Almighty.Mall.Module.Seller.Application.Contracts\Almighty.Mall.Module.Seller.Application.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

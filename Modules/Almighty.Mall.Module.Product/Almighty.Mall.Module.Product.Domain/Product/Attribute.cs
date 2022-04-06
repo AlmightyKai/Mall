@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Almighty.Mall.Module.Product
 {
-    public class Attribute
+    public class Attribute : FullAuditedAggregateRoot<Guid>
     {
         #region [ Columns ]
 

@@ -58,6 +58,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Almighty.Mall.Module.Produc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Almighty.Mall.Module.Product.HttpApi.Client", "Modules\Almighty.Mall.Module.Product\Almighty.Mall.Module.Product.HttpApi.Client\Almighty.Mall.Module.Product.HttpApi.Client.csproj", "{09F02BDD-5D74-4BBC-B486-F9CED58692CF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Almighty.Mall.Module.Seller", "Almighty.Mall.Module.Seller", "{B19BE349-1C1B-4770-BF0E-A0B0EB4A4E5D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Almighty.Mall.Module.Order", "Almighty.Mall.Module.Order", "{E17D0098-4991-4638-A6D8-997123CD28A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Almighty.Mall.Module.Payment", "Almighty.Mall.Module.Payment", "{2C06A7AC-AC15-448B-A821-CAB95D6D3BBC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Almighty.Mall.Module.Search", "Almighty.Mall.Module.Search", "{6EF986BE-5385-43ED-A718-313E7FDA5420}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +161,10 @@ Global
 		{18FA5260-A712-4482-8E4C-7F8A834E21AC} = {31863F62-0ACE-4A5D-8310-94318FD3F387}
 		{93F6953B-FF94-43AC-A12C-567C4BC25395} = {31863F62-0ACE-4A5D-8310-94318FD3F387}
 		{09F02BDD-5D74-4BBC-B486-F9CED58692CF} = {31863F62-0ACE-4A5D-8310-94318FD3F387}
+		{B19BE349-1C1B-4770-BF0E-A0B0EB4A4E5D} = {B674E3F1-B637-403D-BC42-D57E6E5888EC}
+		{E17D0098-4991-4638-A6D8-997123CD28A3} = {B674E3F1-B637-403D-BC42-D57E6E5888EC}
+		{2C06A7AC-AC15-448B-A821-CAB95D6D3BBC} = {B674E3F1-B637-403D-BC42-D57E6E5888EC}
+		{6EF986BE-5385-43ED-A718-313E7FDA5420} = {B674E3F1-B637-403D-BC42-D57E6E5888EC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5DD69845-0563-47C7-9701-333BC7B7401D}
