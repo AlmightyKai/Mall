@@ -5,8 +5,17 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Almighty.Mall.Module.Product
 {
-    public class Attribute : FullAuditedAggregateRoot<Guid>
+    /// <summary>
+    /// Represents a attribute for product.
+    /// </summary>
+    [Table("Attributes")]
+    [Comment("Represents a attribute for product.")]
+    public class Attribute : AuditedAggregateRoot<Guid>
     {
+        #region [ Constants ]
+        
+        #endregion
+        
         #region [ Columns ]
 
         #endregion

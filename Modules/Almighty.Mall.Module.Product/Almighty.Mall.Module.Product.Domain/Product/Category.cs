@@ -10,7 +10,7 @@ namespace Almighty.Mall.Module.Product
     /// </summary>
     [Table("Categories")]
     [Comment("Represents a category for product.")]
-    public class Category : FullAuditedAggregateRoot<Guid>
+    public class Category : AuditedAggregateRoot<Guid>
     {
         #region [ Constants ]
         /// <summary>
