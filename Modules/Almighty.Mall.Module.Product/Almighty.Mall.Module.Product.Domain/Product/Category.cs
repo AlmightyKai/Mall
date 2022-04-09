@@ -36,6 +36,13 @@ namespace Almighty.Mall.Module.Product
 
         #region [ Columns ]
         /// <summary>
+        /// Seller id of this category.
+        /// </summary>
+        [Column("SellerId", TypeName = "uniqueidentifier")]
+        [Comment("Seller id of this category.")]
+        public virtual Guid? SellerId { get; set; }
+
+        /// <summary>
         /// <para>Parent <see cref="Category"/> Id.</para>
         /// <para>Null, if this category is root.</para>
         /// </summary>
@@ -90,6 +97,13 @@ namespace Almighty.Mall.Module.Product
         [Column("IsDisabled", TypeName = "bit")]
         [Comment("A flag indicating if the category is disabled.")]
         public virtual bool IsDisabled { get; set; }
+
+        /// <summary>
+        /// Description of this category.
+        /// </summary>
+        [Column("Description", TypeName = "nvarchar(255)")]
+        [Comment("Description of this category.")]
+        public virtual string Description { get; set; }
         #endregion
 
         #region [ Foreign ]
@@ -108,7 +122,7 @@ namespace Almighty.Mall.Module.Product
 
         #region [ Constructor ]
         /// <summary>
-        /// <para>Initializes a new instance of the <see cref="Attribute"/> class.</para> 
+        /// <para>Initializes a new instance of the <see cref="Category"/> class.</para> 
         /// <para>Default constructor is needed for ORMs.</para> 
         /// </summary>
         private Category()
