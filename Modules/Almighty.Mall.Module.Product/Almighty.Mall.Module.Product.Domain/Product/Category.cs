@@ -56,7 +56,7 @@ namespace Almighty.Mall.Module.Product
         /// <para>It's changeable if category hierarch is changed.</para>
         /// </summary>
         [Required]
-        [Column("Code", TypeName = "nvarchar")]
+        [Column("Code", TypeName = "nvarchar(255)")]
         [Comment("Hierarchical Code of this organization unit. Example: \"00001.00042.00005\". It's changeable if category hierarch is changed.")]
         [StringLength(MaxCodeLength)]
         public virtual string Code { get; set; }
@@ -65,7 +65,7 @@ namespace Almighty.Mall.Module.Product
         /// Display name of this category.
         /// </summary>
         [Required]
-        [Column("DisplayName", TypeName = "nvarchar")]
+        [Column("DisplayName", TypeName = "nvarchar(255)")]
         [Comment("Display name of this category.")]
         [StringLength(MaxDisplayNameLength)]
         public virtual string DisplayName { get; set; }
@@ -269,7 +269,7 @@ namespace Almighty.Mall.Module.Product
 
         #region [ To String ]
         /// <summary>
-        /// Returns a string that represents the current attribute.
+        /// Returns a string that represents the current category.
         /// </summary>
         public override string ToString() => $"{this.Code} --> {this.DisplayName}";
         #endregion

@@ -13,11 +13,37 @@ namespace Almighty.Mall.Module.Product
     public class Attribute : AuditedAggregateRoot<Guid>
     {
         #region [ Constants ]
-        
+        /// <summary>
+        /// Maximum length of the <see cref="DisplayName"/> property.
+        /// </summary>
+        private const int MaxDisplayNameLength = 128;
         #endregion
-        
-        #region [ Columns ]
 
+        #region [ Columns ]
+        /// <summary>
+        /// Seller id of this attribute.
+        /// </summary>
+        [Column("SellerId", TypeName = "uniqueidentifier")]
+        [Comment("Seller id of this attribute.")]
+        public virtual Guid? SellerId { get; set; }
+
+        /// <summary>
+        /// Display name of this attribute.
+        /// </summary>
+        [Required]
+        [Column("DisplayName", TypeName = "nvarchar(255)")]
+        [Comment("Display name of this attribute.")]
+        [StringLength(MaxDisplayNameLength)]
+        public virtual string DisplayName { get; set; }
+
+        /// <summary>
+        /// Description of this attribute.
+        /// </summary>
+        [Required]
+        [Column("Description", TypeName = "nvarchar(255)")]
+        [Comment("Description of this attribute.")]
+        [StringLength(MaxDisplayNameLength)]
+        public virtual string Description { get; set; }
         #endregion
 
         #region [ Foreign ]
@@ -59,10 +85,7 @@ namespace Almighty.Mall.Module.Product
         /// <returns>
         /// A string that represents the current attribute.
         /// </returns>
-        public override string ToString()
-        {
-            return base.ToString();
-        }
+        public override string ToString() => $"{this.DisplayName}";
         #endregion
     }
 }

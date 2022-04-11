@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Almighty.Mall.Module.Search</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="5.2.0" />
+    <ProjectReference Include="..\Almighty.Mall.Module.Search.Application.Contracts\Almighty.Mall.Module.Search.Application.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
