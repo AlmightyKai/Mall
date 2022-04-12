@@ -1,7 +1,6 @@
-﻿namespace Almighty.Mall.Module.Product
+﻿namespace Almighty.Mall.Module.Product;
+
+public static class ProductErrorCodes
 {
-    public static class ProductErrorCodes
-    {
-        //Add your business exception error codes here...
-    }
+    //Add your business exception error codes here...
 }

@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <DebugType>embedded</DebugType>
+	<TargetFramework>net6.0</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>disable</Nullable>
+	<DebugType>embedded</DebugType>
+    <RootNamespace>Almighty.Mall.Module.Product</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.AutoMapper" Version="5.1.4" />
-    <PackageReference Include="Volo.Abp.Ddd.Application" Version="5.1.4" />
+    <PackageReference Include="Volo.Abp.AutoMapper" Version="5.2.0" />
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>

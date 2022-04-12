@@ -1,40 +1,32 @@
 ﻿using Localization.Resources.AbpUi;
-using Microsoft.Extensions.DependencyInjection;
+using Almighty.Mall.Module.Product.Localization;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
-using Almighty.Mall.Module.Product.Localization;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Almighty.Mall.Module.Product
+namespace Almighty.Mall.Module.Product;
+
+[DependsOn(
+    typeof(ProductApplicationContractsModule),
+    typeof(AbpAspNetCoreMvcModule))]
+public class ProductHttpApiModule : AbpModule
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [DependsOn(typeof(ApplicationContractsModule), typeof(AbpAspNetCoreMvcModule))]
-    public class ProductHttpApiModule : AbpModule
+    public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        public override void PreConfigureServices(ServiceConfigurationContext context)
+        PreConfigure<IMvcBuilder>(mvcBuilder =>
         {
-            PreConfigure<IMvcBuilder>(mvcBuilder =>
-            {
-                mvcBuilder.AddApplicationPartIfNotExists(typeof(ProductHttpApiModule).Assembly);
-            });
-        }
+            mvcBuilder.AddApplicationPartIfNotExists(typeof(ProductHttpApiModule).Assembly);
+        });
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        public override void ConfigureServices(ServiceConfigurationContext context)
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        Configure<AbpLocalizationOptions>(options =>
         {
-            Configure<AbpLocalizationOptions>(options =>
-            {
-                options.Resources.Get<ProductResource>().AddBaseTypes(typeof(AbpUiResource));
-            });
-        }
+            options.Resources
+                .Get<ProductResource>()
+                .AddBaseTypes(typeof(AbpUiResource));
+        });
     }
 }

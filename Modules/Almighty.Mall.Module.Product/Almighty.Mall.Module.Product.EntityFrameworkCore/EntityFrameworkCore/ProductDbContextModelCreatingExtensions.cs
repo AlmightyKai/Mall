@@ -5,7 +5,8 @@ namespace Almighty.Mall.Module.Product.EntityFrameworkCore;
 
 public static class ProductDbContextModelCreatingExtensions
 {
-    public static void ConfigureProduct(this ModelBuilder builder)
+    public static void ConfigureProduct(
+        this ModelBuilder builder)
     {
         Check.NotNull(builder, nameof(builder));
 
