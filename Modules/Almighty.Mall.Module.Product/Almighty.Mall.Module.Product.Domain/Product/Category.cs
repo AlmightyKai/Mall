@@ -56,7 +56,7 @@ namespace Almighty.Mall.Module.Product
         /// <para>It's changeable if category hierarch is changed.</para>
         /// </summary>
         [Required]
-        [Column("Code", TypeName = "nvarchar(255)")]
+        [Column("Code", TypeName = "nvarchar(256)")]
         [Comment("Hierarchical Code of this organization unit. Example: \"00001.00042.00005\". It's changeable if category hierarch is changed.")]
         [StringLength(MaxCodeLength)]
         public virtual string Code { get; set; }
@@ -65,7 +65,7 @@ namespace Almighty.Mall.Module.Product
         /// Display name of this category.
         /// </summary>
         [Required]
-        [Column("DisplayName", TypeName = "nvarchar(255)")]
+        [Column("DisplayName", TypeName = "nvarchar(256)")]
         [Comment("Display name of this category.")]
         [StringLength(MaxDisplayNameLength)]
         public virtual string DisplayName { get; set; }
@@ -73,14 +73,14 @@ namespace Almighty.Mall.Module.Product
         /// <summary>
         /// Display icon of this category.
         /// </summary>
-        [Column("DisplayIcon", TypeName = "nvarchar(255)")]
+        [Column("DisplayIcon", TypeName = "nvarchar(256)")]
         [Comment("Display icon of this category.")]
         public virtual string DisplayIcon { get; set; }
 
         /// <summary>
         /// Display image of this category.
         /// </summary>
-        [Column("DisplayImage", TypeName = "nvarchar(255)")]
+        [Column("DisplayImage", TypeName = "nvarchar(256)")]
         [Comment("Display image of this category.")]
         public virtual string DisplayImage { get; set; }
 
@@ -101,7 +101,7 @@ namespace Almighty.Mall.Module.Product
         /// <summary>
         /// Description of this category.
         /// </summary>
-        [Column("Description", TypeName = "nvarchar(255)")]
+        [Column("Description", TypeName = "nvarchar(256)")]
         [Comment("Description of this category.")]
         public virtual string Description { get; set; }
         #endregion
