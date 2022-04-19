@@ -74,11 +74,11 @@ namespace Almighty.Mall.Module.Product
         public virtual string MainImage { get; set; }
 
         /// <summary>
-        /// Main image of this Spu.
+        /// Images of this Spu.
         /// </summary>
         [Required]
-        [Column("MainImage", TypeName = "nvarchar(2048)")]
-        [Comment("Main image of this Spu.")]
+        [Column("Images", TypeName = "nvarchar(2048)")]
+        [Comment("Images of this Spu.")]
         public virtual string Images { get; set; }
 
         /// <summary>

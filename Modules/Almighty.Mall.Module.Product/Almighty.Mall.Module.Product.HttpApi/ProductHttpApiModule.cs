@@ -5,28 +5,27 @@ using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Almighty.Mall.Module.Product;
-
-[DependsOn(
-    typeof(ProductApplicationContractsModule),
-    typeof(AbpAspNetCoreMvcModule))]
-public class ProductHttpApiModule : AbpModule
+namespace Almighty.Mall.Module.Product
 {
-    public override void PreConfigureServices(ServiceConfigurationContext context)
+    [DependsOn(typeof(ApplicationContractsModule), typeof(AbpAspNetCoreMvcModule))]
+    public class ProductHttpApiModule : AbpModule
     {
-        PreConfigure<IMvcBuilder>(mvcBuilder =>
+        public override void PreConfigureServices(ServiceConfigurationContext context)
         {
-            mvcBuilder.AddApplicationPartIfNotExists(typeof(ProductHttpApiModule).Assembly);
-        });
-    }
+            this.PreConfigure<IMvcBuilder>(mvcBuilder =>
+            {
+                mvcBuilder.AddApplicationPartIfNotExists(typeof(ProductHttpApiModule).Assembly);
+            });
+        }
 
-    public override void ConfigureServices(ServiceConfigurationContext context)
-    {
-        Configure<AbpLocalizationOptions>(options =>
+        public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            options.Resources
-                .Get<ProductResource>()
-                .AddBaseTypes(typeof(AbpUiResource));
-        });
+            this.Configure<AbpLocalizationOptions>(options =>
+            {
+                options.Resources
+                    .Get<ProductResource>()
+                    .AddBaseTypes(typeof(AbpUiResource));
+            });
+        }
     }
 }

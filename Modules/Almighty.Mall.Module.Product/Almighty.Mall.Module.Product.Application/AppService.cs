@@ -1,13 +1,14 @@
 ﻿using Almighty.Mall.Module.Product.Localization;
-using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.Application.Services;
 
 namespace Almighty.Mall.Module.Product
 {
-    public abstract class ProductController : AbpControllerBase
+    public abstract class AppService : ApplicationService
     {
-        protected ProductController()
+        protected AppService()
         {
             this.LocalizationResource = typeof(ProductResource);
+            this.ObjectMapperContext = typeof(ApplicationModule);
         }
     }
 }

@@ -3,24 +3,19 @@ using Volo.Abp.Http.Client;
 using Volo.Abp.Modularity;
 using Volo.Abp.VirtualFileSystem;
 
-namespace Almighty.Mall.Module.Product;
-
-[DependsOn(
-    typeof(ProductApplicationContractsModule),
-    typeof(AbpHttpClientModule))]
-public class ProductHttpApiClientModule : AbpModule
+namespace Almighty.Mall.Module.Product
 {
-    public override void ConfigureServices(ServiceConfigurationContext context)
+    [DependsOn(typeof(ApplicationContractsModule), typeof(AbpHttpClientModule))]
+    public class ProductHttpApiClientModule : AbpModule
     {
-        context.Services.AddHttpClientProxies(
-            typeof(ProductApplicationContractsModule).Assembly,
-            ProductRemoteServiceConsts.RemoteServiceName
-        );
-
-        Configure<AbpVirtualFileSystemOptions>(options =>
+        public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            options.FileSets.AddEmbedded<ProductHttpApiClientModule>();
-        });
+            context.Services.AddHttpClientProxies(typeof(ApplicationContractsModule).Assembly, RemoteServiceConsts.RemoteServiceName);
 
+            this.Configure<AbpVirtualFileSystemOptions>(options =>
+            {
+                options.FileSets.AddEmbedded<ProductHttpApiClientModule>();
+            });
+        }
     }
 }

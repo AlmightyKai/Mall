@@ -17,4 +17,9 @@
     <ProjectReference Include="..\Almighty.Mall.Module.Product.Domain.Shared\Almighty.Mall.Module.Product.Domain.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Categories\" />
+    <Folder Include="Attributes\" />
+  </ItemGroup>
+
 </Project>
