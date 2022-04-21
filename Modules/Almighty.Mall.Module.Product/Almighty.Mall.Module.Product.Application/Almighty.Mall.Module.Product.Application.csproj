@@ -18,4 +18,11 @@
     <ProjectReference Include="..\Almighty.Mall.Module.Product.Domain\Almighty.Mall.Module.Product.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+    <Folder Include="ShoppingCarts\" />
+    <Folder Include="Skus\" />
+    <Folder Include="Spus\" />
+  </ItemGroup>
+
 </Project>

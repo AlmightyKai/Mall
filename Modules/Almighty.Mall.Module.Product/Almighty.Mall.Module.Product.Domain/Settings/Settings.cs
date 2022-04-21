@@ -1,6 +1,6 @@
 ﻿namespace Almighty.Mall.Module.Product.Settings;
 
-public static class ProductSettings
+public static class Settings
 {
     public const string GroupName = "Product";
 

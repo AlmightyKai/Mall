@@ -1,22 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Almighty.Mall.Module.Product
+namespace Almighty.Mall.Module.Product.Categories
 {
     /// <summary>
-    /// Represents a category for product.
+    /// Represents a category in the product module.
     /// </summary>
     [Table("Categories")]
-    [Comment("Represents a category for product.")]
+    [Comment("Represents a category in the product module.")]
     public class Category : AuditedAggregateRoot<Guid>
     {
         #region [ Constants ]
         /// <summary>
-        /// Maximum length of the <see cref="DisplayName"/> property.
+        /// Maximum length of the <see cref="Name"/> property.
         /// </summary>
-        private const int MaxDisplayNameLength = 128;
+        private const int MaxNameLength = 128;
 
         /// <summary>
         /// Maximum depth of an category hierarchy.
@@ -36,116 +38,154 @@ namespace Almighty.Mall.Module.Product
 
         #region [ Columns ]
         /// <summary>
-        /// Seller id of this category.
+        /// Gets or sets the foreign key of the category that is linked to a seller. Null, if this category in platform.
         /// </summary>
-        [Column("SellerId", TypeName = "uniqueidentifier")]
-        [Comment("Seller id of this category.")]
+        [Column($"{nameof(SellerId)}", TypeName = "uniqueidentifier")]
+        [Comment("The foreign key of the category that is linked to a seller. Null, if this category in platform.")]
         public virtual Guid? SellerId { get; set; }
 
         /// <summary>
-        /// <para>Parent <see cref="Category"/> Id.</para>
-        /// <para>Null, if this category is root.</para>
+        /// Gets or sets the parent of the category. Null, if this category is root.
         /// </summary>
-        [Column("ParentId", TypeName = "uniqueidentifier")]
-        [Comment("Parent category id. Null, if this category is root.")]
+        [Column($"{nameof(ParentId)}", TypeName = "uniqueidentifier")]
+        [Comment("The parent of the category. Null, if this category is root.")]
         public virtual Guid? ParentId { get; set; }
 
         /// <summary>
-        /// <para>Hierarchical Code of this organization unit.</para>
-        /// <para>Example: "00001.00042.00005".</para>
-        /// <para>It's changeable if category hierarch is changed.</para>
+        /// Gets or sets the hierarchical code for the category (e.g. 00001.00042.00005). It's changeable if category hierarch is changed.
         /// </summary>
         [Required]
-        [Column("Code", TypeName = "nvarchar(256)")]
-        [Comment("Hierarchical Code of this organization unit. Example: \"00001.00042.00005\". It's changeable if category hierarch is changed.")]
+        [Column($"{nameof(Code)}", TypeName = "nvarchar(256)")]
+        [Comment("The hierarchical code for the category (e.g. 00001.00042.00005). It's changeable if category hierarch is changed.")]
         [StringLength(MaxCodeLength)]
         public virtual string Code { get; set; }
 
         /// <summary>
-        /// Display name of this category.
+        /// Gets or sets the name for the category (e.g. Phone, PC, ...).
         /// </summary>
         [Required]
-        [Column("DisplayName", TypeName = "nvarchar(256)")]
-        [Comment("Display name of this category.")]
-        [StringLength(MaxDisplayNameLength)]
-        public virtual string DisplayName { get; set; }
+        [Column($"{nameof(Name)}", TypeName = "nvarchar(256)")]
+        [Comment("The name for the category (e.g. Phone, PC, ...).")]
+        [StringLength(MaxNameLength)]
+        public virtual string Name { get; set; }
 
         /// <summary>
-        /// Display icon of this category.
+        /// Gets or sets the icon for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).
         /// </summary>
-        [Column("DisplayIcon", TypeName = "nvarchar(256)")]
-        [Comment("Display icon of this category.")]
-        public virtual string DisplayIcon { get; set; }
+        [Required]
+        [Column($"{nameof(Icon)}", TypeName = "nvarchar(256)")]
+        [Comment("The icon for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).")]
+        public virtual string Icon { get; set; }
 
         /// <summary>
-        /// Display image of this category.
+        /// Gets or sets the image for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).
         /// </summary>
-        [Column("DisplayImage", TypeName = "nvarchar(256)")]
-        [Comment("Display image of this category.")]
-        public virtual string DisplayImage { get; set; }
+        [Column($"{nameof(Image)}", TypeName = "nvarchar(256)")]
+        [Comment("The image for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).")]
+        public virtual string Image { get; set; }
 
         /// <summary>
-        /// Commission rate of this category.
+        /// Gets or sets the commission rate for the category (e.g. 0.01:1%, 0.1:10%, ...).
         /// </summary>
-        [Column("CommissionRate", TypeName = "decimal(10, 2)")]
-        [Comment("Commission rate of this category.")]
+        [Required]
+        [Column($"{nameof(CommissionRate)}", TypeName = "decimal(10, 2)")]
+        [Comment("The commission rate for the category (e.g. 0.01:1%, 0.1:10%, ...).")]
         public virtual decimal CommissionRate { get; set; }
 
         /// <summary>
-        /// A flag indicating if the category is disabled.
+        /// Gets or sets the description for the category.
         /// </summary>
-        [Column("IsDisabled", TypeName = "bit")]
-        [Comment("A flag indicating if the category is disabled.")]
-        public virtual bool IsDisabled { get; set; }
+        [Required]
+        [Column($"{nameof(Description)}", TypeName = "nvarchar(256)")]
+        [Comment("The description for the category.")]
+        public virtual string Description { get; set; }
 
         /// <summary>
-        /// Description of this category.
+        /// Gets or sets the state for the category (e.g. 0:Disabled, 1:Enabled, ...).
         /// </summary>
-        [Column("Description", TypeName = "nvarchar(256)")]
-        [Comment("Description of this category.")]
-        public virtual string Description { get; set; }
+        [Required]
+        [Column($"{nameof(State)}", TypeName = "tinyint")]
+        [Comment("The state for the category (e.g. 0:Disabled, 1:Enabled, ...).")]
+        public virtual State State { get; set; }
         #endregion
 
         #region [ Foreign ]
         /// <summary>
-        /// <para>Parent <see cref="Category"/>.</para>
-        /// <para>Null, if this category is root.</para>
+        /// Gets or sets the parent of the category. Null, if this category is root.
         /// </summary>
         [ForeignKey(nameof(ParentId))]
         public virtual Category Parent { get; set; }
 
         /// <summary>
-        /// Children of this category.
+        /// Gets or sets the children of the category.
         /// </summary>
         public virtual ICollection<Category> Children { get; set; }
+
+        /// <summary>
+        /// Gets or sets the links of the category that is linked to all brands.
+        /// </summary>
+        public virtual ICollection<CategoryBrand> CategoryBrands { get; set; }
         #endregion
 
         #region [ Constructor ]
         /// <summary>
-        /// <para>Initializes a new instance of the <see cref="Category"/> class.</para> 
-        /// <para>Default constructor is needed for ORMs.</para> 
+        /// <para>Initializes a new instance of the <see cref="Category"/> class.</para>
+        /// <para>Default constructor is needed for ORMs.</para>
         /// </summary>
-        private Category()
+        protected Category()
         {
             /* Do nothing. */
         }
 
-        //internal Product(Guid id, [NotNull] string code, [NotNull] string name, float price = 0.0f, int stockCount = 0, string imageName = null)
-        //{
-        //    Check.NotNullOrWhiteSpace(code, nameof(code));
+        /// <summary>
+        /// <para>Initializes a new instance of the <see cref="Category"/> class.</para>
+        /// </summary>
+        /// <param name="seller">The foreign key of the category that is linked to a seller. Null, if this category in platform.</param>
+        /// <param name="parent">The parent of the category. Null, if this category is root.</param>
+        /// <param name="code">The hierarchical code for the category (e.g. 00001.00042.00005). It's changeable if category hierarch is changed.</param>
+        /// <param name="name">The name for the category (e.g. Phone, PC, ...).</param>
+        /// <param name="icon">The icon for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).</param>
+        /// <param name="image">The image for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).</param>
+        /// <param name="commissionRate">The commission rate for the category (e.g. 0.01:1%, 0.1:10%, ...).</param>
+        /// <param name="description">The description for the category.</param>
+        /// <param name="state">The state for the category (e.g. 0:Disabled, 1:Enabled, ...).</param>
+        public Category(          Guid?    seller,
+                                  Category parent,
+                        [NotNull] string   code,
+                        [NotNull] string   name,
+                        [NotNull] string   icon,
+                                  string   image,
+                        [NotNull] decimal  commissionRate,
+                        [NotNull] string   description,
+                        [NotNull] State    state)
+            : this()
+        {
+            Check.NotNullOrWhiteSpace(code,        nameof(code));
+            Check.NotNullOrWhiteSpace(name,        nameof(name));
+            Check.NotNullOrWhiteSpace(icon,        nameof(icon));
+            Check.NotNull(commissionRate,          nameof(commissionRate));
+            Check.NotNullOrWhiteSpace(description, nameof(description));
+            Check.NotNull(state,                   nameof(state));
 
-        //    if (code.Length >= ProductConsts.MaxCodeLength)
-        //    {
-        //        throw new ArgumentException($"Product code can not be longer than {ProductConsts.MaxCodeLength}");
-        //    }
+            if (code.Length >= Category.MaxCodeLength)
+            {
+                throw new ArgumentException($"{nameof(Category)} {nameof(code)} can not be longer than {Category.MaxCodeLength}");
+            }
+            if (code.Length >= Category.MaxNameLength)
+            {
+                throw new ArgumentException($"{nameof(Category)} {nameof(name)} can not be longer than {Category.MaxNameLength}");
+            }
 
-        //    Id = id;
-        //    Code = code;
-        //    SetName(Check.NotNullOrWhiteSpace(name, nameof(name)));
-        //    SetPrice(price);
-        //    SetImageName(imageName);
-        //    SetStockCountInternal(stockCount, triggerEvent: false);
-        //}
+            this.SellerId       = seller;
+            this.ParentId       = parent?.Id;
+            this.Code           = code;
+            this.Name           = name;
+            this.Icon           = icon;
+            this.Image          = image;
+            this.CommissionRate = commissionRate;
+            this.Description    = description;
+            this.State          = state;
+        }
         #endregion
 
         #region [ Code ]
@@ -174,7 +214,7 @@ namespace Almighty.Mall.Module.Product
         {
             if (childCode.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(childCode), "childCode can not be null or empty.");
+                throw new ArgumentNullException(nameof(childCode), $"{nameof(childCode)} can not be null or empty.");
             }
 
             if (parentCode.IsNullOrEmpty())
@@ -195,7 +235,7 @@ namespace Almighty.Mall.Module.Product
         {
             if (code.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(code), "code can not be null or empty.");
+                throw new ArgumentNullException(nameof(code), $"{nameof(code)} can not be null or empty.");
             }
 
             if (parentCode.IsNullOrEmpty())
@@ -220,11 +260,11 @@ namespace Almighty.Mall.Module.Product
         {
             if (code.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(code), "code can not be null or empty.");
+                throw new ArgumentNullException(nameof(code), $"{nameof(code)} can not be null or empty.");
             }
 
-            var parentCode = Category.GetParentCode(code);
-            var lastUnitCode = Category.GetLastUnitCode(code);
+            string parentCode   = Category.GetParentCode(code);
+            string lastUnitCode = Category.GetLastUnitCode(code);
 
             return Category.AppendCode(parentCode, Category.CreateCode(Convert.ToInt32(lastUnitCode) + 1));
         }
@@ -238,10 +278,11 @@ namespace Almighty.Mall.Module.Product
         {
             if (code.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(code), "code can not be null or empty.");
+                throw new ArgumentNullException(nameof(code), $"{nameof(code)} can not be null or empty.");
             }
 
-            var splittedCode = code.Split('.');
+            string[] splittedCode = code.Split('.');
+
             return splittedCode[splittedCode.Length - 1];
         }
 
@@ -254,10 +295,11 @@ namespace Almighty.Mall.Module.Product
         {
             if (code.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(code), "code can not be null or empty.");
+                throw new ArgumentNullException(nameof(code), $"{nameof(code)} can not be null or empty.");
             }
 
-            var splittedCode = code.Split('.');
+            string[] splittedCode = code.Split('.');
+
             if (splittedCode.Length == 1)
             {
                 return null;
@@ -271,7 +313,12 @@ namespace Almighty.Mall.Module.Product
         /// <summary>
         /// Returns a string that represents the current category.
         /// </summary>
-        public override string ToString() => $"{this.Code} --> {this.DisplayName}";
+        public override string ToString()
+        {
+            return $"{nameof(this.Code)}:{this.Code}" +
+                   $" - " +
+                   $"{nameof(this.Name)}:{this.Name}";
+        }
         #endregion
     }
 }

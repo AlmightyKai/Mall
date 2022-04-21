@@ -2,7 +2,7 @@
 
 namespace Almighty.Mall.Module.Product.Settings;
 
-public class ProductSettingDefinitionProvider : SettingDefinitionProvider
+public class SettingDefinitionProvider : Volo.Abp.Settings.SettingDefinitionProvider
 {
     public override void Define(ISettingDefinitionContext context)
     {
