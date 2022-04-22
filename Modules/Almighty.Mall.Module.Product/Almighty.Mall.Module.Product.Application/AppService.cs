@@ -8,7 +8,7 @@ namespace Almighty.Mall.Module.Product
         protected AppService()
         {
             this.LocalizationResource = typeof(ProductResource);
-            this.ObjectMapperContext = typeof(ApplicationModule);
+            this.ObjectMapperContext  = typeof(ApplicationModule);
         }
     }
 }

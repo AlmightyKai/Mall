@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Almighty.Mall.Module.Product.Attributes;
+using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
@@ -16,24 +17,39 @@ namespace Almighty.Mall.Module.Product.Categories
     {
         #region [ Constants ]
         /// <summary>
-        /// Maximum length of the <see cref="Name"/> property.
-        /// </summary>
-        private const int MaxNameLength = 128;
-
-        /// <summary>
         /// Maximum depth of an category hierarchy.
         /// </summary>
-        private const int MaxDepth = 16;
+        private const int MAX_DEPTH = 16;
 
         /// <summary>
         /// Length of a code unit between dots.
         /// </summary>
-        private const int CodeUnitLength = 5;
+        private const int CODE_UNIT_LENGTH = 5;
 
         /// <summary>
         /// Maximum length of the <see cref="Code"/> property.
         /// </summary>
-        private const int MaxCodeLength = MaxDepth * (CodeUnitLength + 1) - 1;
+        private const int MAX_CODE_LENGTH = MAX_DEPTH * (CODE_UNIT_LENGTH + 1) - 1;
+
+        /// <summary>
+        /// Maximum length of the <see cref="Name"/> property.
+        /// </summary>
+        private const int MAX_NAME_LENGTH = 128;
+
+        /// <summary>
+        /// Maximum length of the <see cref="Icon"/> property.
+        /// </summary>
+        private const int MAX_ICON_LENGTH = 256;
+
+        /// <summary>
+        /// Maximum length of the <see cref="Image"/> property.
+        /// </summary>
+        private const int MAX_IMAGE_LENGTH = 256;
+
+        /// <summary>
+        /// Maximum length of the <see cref="Description"/> property.
+        /// </summary>
+        private const int MAX_DESCRIPTION_LENGTH = 256;
         #endregion
 
         #region [ Columns ]
@@ -57,7 +73,7 @@ namespace Almighty.Mall.Module.Product.Categories
         [Required]
         [Column($"{nameof(Code)}", TypeName = "nvarchar(256)")]
         [Comment("The hierarchical code for the category (e.g. 00001.00042.00005). It's changeable if category hierarch is changed.")]
-        [StringLength(MaxCodeLength)]
+        [StringLength(MAX_CODE_LENGTH)]
         public virtual string Code { get; set; }
 
         /// <summary>
@@ -66,22 +82,24 @@ namespace Almighty.Mall.Module.Product.Categories
         [Required]
         [Column($"{nameof(Name)}", TypeName = "nvarchar(256)")]
         [Comment("The name for the category (e.g. Phone, PC, ...).")]
-        [StringLength(MaxNameLength)]
+        [StringLength(MAX_NAME_LENGTH)]
         public virtual string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the icon for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).
+        /// Gets or sets the icon url for the category.
         /// </summary>
         [Required]
         [Column($"{nameof(Icon)}", TypeName = "nvarchar(256)")]
-        [Comment("The icon for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).")]
+        [Comment("The icon url for the category.")]
+        [StringLength(MAX_ICON_LENGTH)]
         public virtual string Icon { get; set; }
 
         /// <summary>
-        /// Gets or sets the image for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).
+        /// Gets or sets the image url for the category.
         /// </summary>
         [Column($"{nameof(Image)}", TypeName = "nvarchar(256)")]
-        [Comment("The image for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).")]
+        [Comment("The image url for the category.")]
+        [StringLength(MAX_IMAGE_LENGTH)]
         public virtual string Image { get; set; }
 
         /// <summary>
@@ -98,6 +116,7 @@ namespace Almighty.Mall.Module.Product.Categories
         [Required]
         [Column($"{nameof(Description)}", TypeName = "nvarchar(256)")]
         [Comment("The description for the category.")]
+        [StringLength(MAX_DESCRIPTION_LENGTH)]
         public virtual string Description { get; set; }
 
         /// <summary>
@@ -125,6 +144,11 @@ namespace Almighty.Mall.Module.Product.Categories
         /// Gets or sets the links of the category that is linked to all brands.
         /// </summary>
         public virtual ICollection<CategoryBrand> CategoryBrands { get; set; }
+
+        /// <summary>
+        /// Gets or sets the links of the category that is linked to all attributes.
+        /// </summary>
+        public virtual ICollection<AttributeCategory> AttributeCategories { get; set; }
         #endregion
 
         #region [ Constructor ]
@@ -138,26 +162,26 @@ namespace Almighty.Mall.Module.Product.Categories
         }
 
         /// <summary>
-        /// <para>Initializes a new instance of the <see cref="Category"/> class.</para>
+        /// Initializes a new instance of the <see cref="Category"/> class.
         /// </summary>
         /// <param name="seller">The foreign key of the category that is linked to a seller. Null, if this category in platform.</param>
         /// <param name="parent">The parent of the category. Null, if this category is root.</param>
         /// <param name="code">The hierarchical code for the category (e.g. 00001.00042.00005). It's changeable if category hierarch is changed.</param>
         /// <param name="name">The name for the category (e.g. Phone, PC, ...).</param>
-        /// <param name="icon">The icon for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).</param>
-        /// <param name="image">The image for the category (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).</param>
+        /// <param name="icon">The icon url for the category.</param>
+        /// <param name="image">The image url for the category.</param>
         /// <param name="commissionRate">The commission rate for the category (e.g. 0.01:1%, 0.1:10%, ...).</param>
         /// <param name="description">The description for the category.</param>
         /// <param name="state">The state for the category (e.g. 0:Disabled, 1:Enabled, ...).</param>
-        public Category(          Guid?    seller,
-                                  Category parent,
-                        [NotNull] string   code,
-                        [NotNull] string   name,
-                        [NotNull] string   icon,
-                                  string   image,
-                        [NotNull] decimal  commissionRate,
-                        [NotNull] string   description,
-                        [NotNull] State    state)
+        public Category(            Guid?    seller,
+                                    Category parent,
+                        [NotNull]   string   code,
+                        [NotNull]   string   name,
+                        [NotNull]   string   icon,
+                        [CanBeNull] string   image,
+                        [NotNull]   decimal  commissionRate,
+                        [NotNull]   string   description,
+                        [NotNull]   State    state)
             : this()
         {
             Check.NotNullOrWhiteSpace(code,        nameof(code));
@@ -167,13 +191,29 @@ namespace Almighty.Mall.Module.Product.Categories
             Check.NotNullOrWhiteSpace(description, nameof(description));
             Check.NotNull(state,                   nameof(state));
 
-            if (code.Length >= Category.MaxCodeLength)
+            if (code.Length > Category.MAX_CODE_LENGTH)
             {
-                throw new ArgumentException($"{nameof(Category)} {nameof(code)} can not be longer than {Category.MaxCodeLength}");
+                throw new ArgumentException($"{nameof(Category)} {nameof(code)} can not be longer than {Category.MAX_CODE_LENGTH}");
             }
-            if (code.Length >= Category.MaxNameLength)
+            if (name.Length > Category.MAX_NAME_LENGTH)
             {
-                throw new ArgumentException($"{nameof(Category)} {nameof(name)} can not be longer than {Category.MaxNameLength}");
+                throw new ArgumentException($"{nameof(Category)} {nameof(name)} can not be longer than {Category.MAX_NAME_LENGTH}");
+            }
+            if (icon.Length > Category.MAX_ICON_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Category)} {nameof(icon)} can not be longer than {Category.MAX_ICON_LENGTH}");
+            }
+            if (image?.Length > Category.MAX_IMAGE_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Category)} {nameof(image)} can not be longer than {Category.MAX_IMAGE_LENGTH}");
+            }
+            if ((commissionRate < decimal.Zero) || ((1M < commissionRate)))
+            {
+                throw new ArgumentException($"{nameof(Category)} {nameof(commissionRate)} can not be less than {decimal.Zero} and can not be more than 1");
+            }
+            if (description?.Length > Category.MAX_DESCRIPTION_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Category)} {nameof(description)} can not be longer than {Category.MAX_DESCRIPTION_LENGTH}");
             }
 
             this.SellerId       = seller;
@@ -201,7 +241,7 @@ namespace Almighty.Mall.Module.Product.Categories
                 return null;
             }
 
-            return numbers.Select(number => number.ToString(new string('0', Category.CodeUnitLength))).JoinAsString(".");
+            return numbers.Select(number => number.ToString(new string('0', Category.CODE_UNIT_LENGTH))).JoinAsString(".");
         }
 
         /// <summary>

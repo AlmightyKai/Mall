@@ -25,7 +25,6 @@
     <Folder Include="Attributes\" />
     <Folder Include="ShoppingCarts\" />
     <Folder Include="Skus\" />
-    <Folder Include="Spus\" />
   </ItemGroup>
 
 </Project>

@@ -1,46 +1,47 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Almighty.Mall.Module.Product.Categories;
+using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Almighty.Mall.Module.Product
+namespace Almighty.Mall.Module.Product.Attributes
 {
     /// <summary>
-    /// Represents a attribute category for product.
+    /// Represents the link between an attribute and a category in the product module.
     /// </summary>
-    [Table("AttributeCategory")]
-    [Comment("Represents a attribute category for product.")]
+    [Table("AttributeCategories")]
+    [Comment("Represents the link between an attribute and a category in the product module.")]
     public class AttributeCategory : AuditedAggregateRoot<Guid>
     {
-        #region [ Constants ]
-
-        #endregion
-
         #region [ Columns ]
         /// <summary>
-        /// Attribute id of this attribute category.
+        /// Gets or sets the foreign key of the attribute that is linked to a category.
         /// </summary>
-        [Column("AttributeId", TypeName = "uniqueidentifier")]
-        [Comment("Attribute id of this atribute category.")]
+        [Required]
+        [Column($"{nameof(AttributeId)}", TypeName = "uniqueidentifier")]
+        [Comment("The foreign key of the attribute that is linked to a category.")]
         public virtual Guid? AttributeId { get; set; }
 
         /// <summary>
-        /// Category id of this attribute category.
+        /// Gets or sets the foreign key of the category that is linked to the attribute.
         /// </summary>
-        [Column("CategoryId", TypeName = "uniqueidentifier")]
-        [Comment("Category id of this atribute category.")]
+        [Required]
+        [Column($"{nameof(CategoryId)}", TypeName = "uniqueidentifier")]
+        [Comment("The foreign key of the category that is linked to the attribute.")]
         public virtual Guid? CategoryId { get; set; }
         #endregion
 
         #region [ Foreign ]
         /// <summary>
-        /// <para>Parent <see cref="Attribute"/>.</para>
+        /// Gets or sets the foreign key of the attribute that is linked to a category.
         /// </summary>
         [ForeignKey(nameof(AttributeId))]
         public virtual Attribute Attribute { get; set; }
 
         /// <summary>
-        /// <para>Parent <see cref="Category"/>.</para>
+        /// Gets or sets the foreign key of the category that is linked to the attribute.
         /// </summary>
         [ForeignKey(nameof(CategoryId))]
         public virtual Category Category { get; set; }
@@ -48,37 +49,41 @@ namespace Almighty.Mall.Module.Product
 
         #region [ Constructor ]
         /// <summary>
-        /// <para>Initializes a new instance of the <see cref="AttributeCategory"/> class.</para> 
-        /// <para>Default constructor is needed for ORMs.</para> 
+        /// <para>Initializes a new instance of the <see cref="AttributeCategory"/> class.</para>
+        /// <para>Default constructor is needed for ORMs.</para>
         /// </summary>
-        private AttributeCategory()
+        protected AttributeCategory()
         {
             /* Do nothing. */
         }
 
-        //internal AttributeCategory(Guid id, [NotNull] string code, [NotNull] string name, float price = 0.0f, int stockCount = 0, string imageName = null)
-        //{
-        //    Check.NotNullOrWhiteSpace(code, nameof(code));
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AttributeCategory"/> class.
+        /// </summary>
+        /// <param name="attribute">The foreign key of the attribute that is linked to a category.</param>
+        /// <param name="category">The foreign key of the category that is linked to the attribute.</param>
+        public AttributeCategory([NotNull] Attribute attribute,
+                                 [NotNull] Category  category)
+            : this()
+        {
+            Check.NotNull(attribute, nameof(attribute));
+            Check.NotNull(category,  nameof(category));
 
-        //    if (code.Length >= ProductConsts.MaxCodeLength)
-        //    {
-        //        throw new ArgumentException($"Product code can not be longer than {ProductConsts.MaxCodeLength}");
-        //    }
-
-        //    Id = id;
-        //    Code = code;
-        //    SetName(Check.NotNullOrWhiteSpace(name, nameof(name)));
-        //    SetPrice(price);
-        //    SetImageName(imageName);
-        //    SetStockCountInternal(stockCount, triggerEvent: false);
-        //}
+            this.AttributeId = attribute.Id;
+            this.CategoryId  = category.Id;
+        }
         #endregion
 
         #region [ To String ]
         /// <summary>
         /// Returns a string that represents the current attribute category.
         /// </summary>
-        public override string ToString() => $"{base.ToString()}";
+        public override string ToString()
+        {
+            return $"{nameof(this.Attribute)}:{((null != this.Attribute) ? this.Attribute.Name : this.AttributeId)}" +
+                   $" - " +
+                   $"{nameof(this.Category)}:{((null != this.Category) ? this.Category.Name : this.CategoryId)}";
+        }
         #endregion
     }
 }

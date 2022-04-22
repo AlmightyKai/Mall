@@ -1,8 +1,8 @@
 ﻿using Almighty.Mall.Module.Product.Categories;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
@@ -19,7 +19,32 @@ namespace Almighty.Mall.Module.Product.Brands
         /// <summary>
         /// Maximum length of the <see cref="Name"/> property.
         /// </summary>
-        private const int MaxNameLength = 128;
+        private const int MAX_NAME_LENGTH = 128;
+
+        /// <summary>
+        /// Maximum length of the <see cref="Logo"/> property.
+        /// </summary>
+        private const int MAX_LOGO_LENGTH = 256;
+
+        /// <summary>
+        /// Maximum length of the <see cref="Image"/> property.
+        /// </summary>
+        private const int MAX_IMAGE_LENGTH = 256;
+
+        /// <summary>
+        /// Maximum length of the <see cref="BigImage"/> property.
+        /// </summary>
+        private const int MAX_BIG_IMAGE_LENGTH = 256;
+
+        /// <summary>
+        /// Maximum length of the <see cref="FirstWord"/> property.
+        /// </summary>
+        private const int MAX_FIRST_WORD_LENGTH = 1;
+
+        /// <summary>
+        /// Maximum length of the <see cref="Brief"/> property.
+        /// </summary>
+        private const int MAX_BRIEF_LENGTH = 256;
         #endregion
 
         #region [ Columns ]
@@ -37,29 +62,32 @@ namespace Almighty.Mall.Module.Product.Brands
         [Required]
         [Column($"{nameof(Name)}", TypeName = "nvarchar(256)")]
         [Comment("The name for the brand (e.g. Apple, Samsung, ...).")]
-        [StringLength(MaxNameLength)]
+        [StringLength(MAX_NAME_LENGTH)]
         public virtual string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the logo for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).
+        /// Gets or sets the logo url for the brand.
         /// </summary>
         [Required]
         [Column($"{nameof(Logo)}", TypeName = "nvarchar(256)")]
-        [Comment("The logo for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).")]
+        [Comment("The logo url for the brand.")]
+        [StringLength(MAX_LOGO_LENGTH)]
         public virtual string Logo { get; set; }
 
         /// <summary>
-        /// Gets or sets the image for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).
+        /// Gets or sets the image url for the brand.
         /// </summary>
         [Column($"{nameof(Image)}", TypeName = "nvarchar(256)")]
-        [Comment("The image for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).")]
+        [Comment("The image url for the brand.")]
+        [StringLength(MAX_IMAGE_LENGTH)]
         public virtual string Image { get; set; }
 
         /// <summary>
-        /// Gets or sets the big image for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).
+        /// Gets or sets the big image url for the brand.
         /// </summary>
         [Column($"{nameof(BigImage)}", TypeName = "nvarchar(256)")]
-        [Comment("The big image for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).")]
+        [Comment("The big image url for the brand.")]
+        [StringLength(MAX_BIG_IMAGE_LENGTH)]
         public virtual string BigImage { get; set; }
 
         /// <summary>
@@ -68,6 +96,7 @@ namespace Almighty.Mall.Module.Product.Brands
         [Required]
         [Column($"{nameof(FirstWord)}", TypeName = "nvarchar(1)")]
         [Comment("The first word for the brand (e.g. A:Apple, S:Samsung, ...).")]
+        [StringLength(MAX_FIRST_WORD_LENGTH)]
         public virtual string FirstWord { get; set; }
 
         /// <summary>
@@ -76,6 +105,7 @@ namespace Almighty.Mall.Module.Product.Brands
         [Required]
         [Column($"{nameof(Brief)}", TypeName = "nvarchar(256)")]
         [Comment("The brief for the brand (e.g. Apple Inc. is a multinational company that makes personal computers ...).")]
+        [StringLength(MAX_BRIEF_LENGTH)]
         public virtual string Brief { get; set; }
 
         /// <summary>
@@ -116,22 +146,22 @@ namespace Almighty.Mall.Module.Product.Brands
         /// </summary>
         /// <param name="sequence">The sequence for the brand (e.g. 0, 1, 2, ...).</param>
         /// <param name="name">The name for the brand (e.g. Apple, Samsung, ...).</param>
-        /// <param name="logo">The logo for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).</param>
-        /// <param name="image">The image for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).</param>
-        /// <param name="bigImage">The big image for the brand (e.g. https://www-file.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png).</param>
+        /// <param name="logo">The logo url for the brand.</param>
+        /// <param name="image">The image url for the brand.</param>
+        /// <param name="bigImage">The big image url for the brand.</param>
         /// <param name="firstWord">The first word for the brand (e.g. A:Apple, S:Samsung, ...).</param>
         /// <param name="brief">The brief for the brand (e.g. Apple Inc. is a multinational company that makes personal computers ...).</param>
         /// <param name="story">The story for the brand.</param>
         /// <param name="state">The state for the brand (e.g. 0:Disabled, 1:Enabled, ...).</param>
-        public Brand(          int    sequence,
-                     [NotNull] string name,
-                     [NotNull] string logo,
-                               string image,
-                               string bigImage,
-                     [NotNull] string firstWord,
-                     [NotNull] string brief,
-                               string story,
-                     [NotNull] State  state)
+        public Brand(            int    sequence,
+                     [NotNull]   string name,
+                     [NotNull]   string logo,
+                     [CanBeNull] string image,
+                     [CanBeNull] string bigImage,
+                     [NotNull]   string firstWord,
+                     [NotNull]   string brief,
+                     [CanBeNull] string story,
+                     [NotNull]   State  state)
             : this()
         {
             Check.NotNullOrWhiteSpace(name,      nameof(name));
@@ -139,6 +169,31 @@ namespace Almighty.Mall.Module.Product.Brands
             Check.NotNullOrWhiteSpace(firstWord, nameof(firstWord));
             Check.NotNullOrWhiteSpace(brief,     nameof(brief));
             Check.NotNull(state,                 nameof(state));
+
+            if (name.Length > Brand.MAX_NAME_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Brand)} {nameof(name)} can not be longer than {Brand.MAX_NAME_LENGTH}");
+            }
+            if (logo.Length > Brand.MAX_LOGO_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Brand)} {nameof(logo)} can not be longer than {Brand.MAX_LOGO_LENGTH}");
+            }
+            if (image?.Length > Brand.MAX_IMAGE_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Brand)} {nameof(image)} can not be longer than {Brand.MAX_IMAGE_LENGTH}");
+            }
+            if (bigImage?.Length > Brand.MAX_BIG_IMAGE_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Brand)} {nameof(bigImage)} can not be longer than {Brand.MAX_BIG_IMAGE_LENGTH}");
+            }
+            if (firstWord.Length > Brand.MAX_FIRST_WORD_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Brand)} {nameof(firstWord)} can not be longer than {Brand.MAX_FIRST_WORD_LENGTH}");
+            }
+            if (brief.Length > Brand.MAX_BRIEF_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(Brand)} {nameof(brief)} can not be longer than {Brand.MAX_BRIEF_LENGTH}");
+            }
 
             this.Sequence  = sequence;
             this.Name      = name;
