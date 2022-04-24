@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using Almighty.Mall.Module.Product.Spus;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -25,26 +26,37 @@ namespace Almighty.Mall.Module.Product.Attributes
         /// <summary>
         /// Gets or sets the foreign key of an attribute that is linked to the value.
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(AttributeId)}", TypeName = "uniqueidentifier")]
         [Comment("The foreign key of an attribute that is linked to the value.")]
-        public virtual Guid AttributeId { get; set; }
+        public virtual Guid AttributeId { get; protected set; }
 
         /// <summary>
         /// Gets or sets the value for the attribute value (e.g. White, Blue, ...).
         /// </summary>
+        [CanBeNull]
         [Column($"{nameof(Value)}", TypeName = "nvarchar(256)")]
         [Comment("The value for the attribute value (e.g. White, Blue, ...).")]
         [StringLength(MAX_VALUE_LENGTH)]
-        public virtual string Value { get; set; }
+        public virtual string Value { get; protected set; }
         #endregion
 
         #region [ Foreign ]
         /// <summary>
-        /// Gets or sets the foreign key of an attribute that is linked to the value.
+        /// Gets or sets the foreign key of an attribute that is linked to the attribute value.
         /// </summary>
         [ForeignKey(nameof(AttributeId))]
-        public virtual Attribute Attribute { get; set; }
+        public virtual Attribute Attribute { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the links of the attribute value that is linked to all spu attribute values.
+        /// </summary>
+        public virtual ICollection<SpuAttributeValue> SpuAttributeValues { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the links of the attribute value that is linked to all spu sku attribute values.
+        /// </summary>
+        public virtual ICollection<SpuSkuAttributeValue> SpuSkuAttributeValues { get; protected set; }
         #endregion
 
         #region [ Constructor ]
@@ -66,15 +78,35 @@ namespace Almighty.Mall.Module.Product.Attributes
                               [CanBeNull] string    value)
             : this()
         {
-            Check.NotNull(attribute, nameof(attribute));
+            this.SetAttributeId(attribute);
+            this.SetValue(value);
+        }
+        #endregion
 
+        #region [ Column Set ]
+        /// <summary>
+        /// Set <see cref="AttributeId"/>.
+        /// </summary>
+        /// <param name="attribute">The foreign key of an attribute that is linked to the value.</param>
+        public AttributeValue SetAttributeId([NotNull] Attribute attribute)
+        {
+            this.AttributeId = Check.NotNull(attribute, nameof(attribute)).Id;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Value"/>.
+        /// </summary>
+        /// <param name="value">The foreign key of a spu that is linked to the spu attribute value.</param>
+        public AttributeValue SetValue([CanBeNull] string value)
+        {
             if (value?.Length > AttributeValue.MAX_VALUE_LENGTH)
             {
                 throw new ArgumentException($"{nameof(AttributeValue)} {nameof(value)} can not be longer than {AttributeValue.MAX_VALUE_LENGTH}");
             }
 
-            this.AttributeId = attribute.Id;
-            this.Value       = value;
+            this.Value = value;
+            return this;
         }
         #endregion
 

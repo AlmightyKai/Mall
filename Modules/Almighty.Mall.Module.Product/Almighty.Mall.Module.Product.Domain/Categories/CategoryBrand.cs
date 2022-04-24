@@ -1,7 +1,6 @@
 ﻿using Almighty.Mall.Module.Product.Brands;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
@@ -19,18 +18,18 @@ namespace Almighty.Mall.Module.Product.Categories
         /// <summary>
         /// Gets or sets the foreign key of the category that is linked to a brand.
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(CategoryId)}", TypeName = "uniqueidentifier")]
         [Comment("The category that is linked to a brand.")]
-        public virtual Guid? CategoryId { get; set; }
+        public virtual Guid? CategoryId { get; protected set; }
 
         /// <summary>
         /// Gets or sets the foreign key of the brand that is linked to the category.
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(BrandId)}", TypeName = "uniqueidentifier")]
         [Comment("The brand that is linked to the category.")]
-        public virtual Guid? BrandId { get; set; }
+        public virtual Guid? BrandId { get; protected set; }
         #endregion
 
         #region [ Foreign ]
@@ -38,13 +37,13 @@ namespace Almighty.Mall.Module.Product.Categories
         /// Gets or sets the foreign key of the category that is linked to a brand.
         /// </summary>
         [ForeignKey(nameof(CategoryId))]
-        public virtual Category Category { get; set; }
+        public virtual Category Category { get; protected set; }
 
         /// <summary>
         /// Gets or sets the foreign key of the brand that is linked to the category.
         /// </summary>
         [ForeignKey(nameof(BrandId))]
-        public virtual Brand Brand { get; set; }
+        public virtual Brand Brand { get; protected set; }
         #endregion
 
         #region [ Constructor ]
@@ -66,11 +65,30 @@ namespace Almighty.Mall.Module.Product.Categories
                              [NotNull] Brand    brand)
             : this()
         {
-            Check.NotNull(category, nameof(category));
-            Check.NotNull(brand,    nameof(brand));
+            this.SetCategoryId(category);
+            this.SetBrandId(brand);
+        }
+        #endregion
 
-            this.CategoryId = category.Id;
-            this.BrandId    = brand.Id;
+        #region [ Column Set ]
+        /// <summary>
+        /// Set <see cref="CategoryId"/>.
+        /// </summary>
+        /// <param name="category">The category that is linked to a brand.</param>
+        public CategoryBrand SetCategoryId([NotNull] Category category)
+        {
+            this.CategoryId = Check.NotNull(category, nameof(category)).Id;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="BrandId"/>.
+        /// </summary>
+        /// <param name="brand">The brand that is linked to the category.</param>
+        public CategoryBrand SetBrandId([NotNull] Brand brand)
+        {
+            this.BrandId = Check.NotNull(brand, nameof(brand)).Id;
+            return this;
         }
         #endregion
 

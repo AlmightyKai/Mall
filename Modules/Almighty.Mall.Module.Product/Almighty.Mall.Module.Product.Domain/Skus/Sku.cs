@@ -52,7 +52,10 @@ namespace Almighty.Mall.Module.Product
 
         #endregion
 
-
+        #region [ Foreign ]
+        
+        
+        #endregion
 
 
 

@@ -56,76 +56,79 @@ namespace Almighty.Mall.Module.Product.Categories
         /// <summary>
         /// Gets or sets the foreign key of the category that is linked to a seller. Null, if this category in platform.
         /// </summary>
+        [CanBeNull]
         [Column($"{nameof(SellerId)}", TypeName = "uniqueidentifier")]
         [Comment("The foreign key of the category that is linked to a seller. Null, if this category in platform.")]
-        public virtual Guid? SellerId { get; set; }
+        public virtual Guid? SellerId { get; protected set; }
 
         /// <summary>
         /// Gets or sets the parent of the category. Null, if this category is root.
         /// </summary>
+        [CanBeNull]
         [Column($"{nameof(ParentId)}", TypeName = "uniqueidentifier")]
         [Comment("The parent of the category. Null, if this category is root.")]
-        public virtual Guid? ParentId { get; set; }
+        public virtual Guid? ParentId { get; protected set; }
 
         /// <summary>
         /// Gets or sets the hierarchical code for the category (e.g. 00001.00042.00005). It's changeable if category hierarch is changed.
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(Code)}", TypeName = "nvarchar(256)")]
         [Comment("The hierarchical code for the category (e.g. 00001.00042.00005). It's changeable if category hierarch is changed.")]
         [StringLength(MAX_CODE_LENGTH)]
-        public virtual string Code { get; set; }
+        public virtual string Code { get; protected set; }
 
         /// <summary>
         /// Gets or sets the name for the category (e.g. Phone, PC, ...).
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(Name)}", TypeName = "nvarchar(256)")]
         [Comment("The name for the category (e.g. Phone, PC, ...).")]
         [StringLength(MAX_NAME_LENGTH)]
-        public virtual string Name { get; set; }
+        public virtual string Name { get; protected set; }
 
         /// <summary>
         /// Gets or sets the icon url for the category.
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(Icon)}", TypeName = "nvarchar(256)")]
         [Comment("The icon url for the category.")]
         [StringLength(MAX_ICON_LENGTH)]
-        public virtual string Icon { get; set; }
+        public virtual string Icon { get; protected set; }
 
         /// <summary>
         /// Gets or sets the image url for the category.
         /// </summary>
+        [CanBeNull]
         [Column($"{nameof(Image)}", TypeName = "nvarchar(256)")]
         [Comment("The image url for the category.")]
         [StringLength(MAX_IMAGE_LENGTH)]
-        public virtual string Image { get; set; }
+        public virtual string Image { get; protected set; }
 
         /// <summary>
         /// Gets or sets the commission rate for the category (e.g. 0.01:1%, 0.1:10%, ...).
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(CommissionRate)}", TypeName = "decimal(10, 2)")]
         [Comment("The commission rate for the category (e.g. 0.01:1%, 0.1:10%, ...).")]
-        public virtual decimal CommissionRate { get; set; }
+        public virtual decimal CommissionRate { get; protected set; }
 
         /// <summary>
         /// Gets or sets the description for the category.
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(Description)}", TypeName = "nvarchar(256)")]
         [Comment("The description for the category.")]
         [StringLength(MAX_DESCRIPTION_LENGTH)]
-        public virtual string Description { get; set; }
+        public virtual string Description { get; protected set; }
 
         /// <summary>
         /// Gets or sets the state for the category (e.g. 0:Disabled, 1:Enabled, ...).
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(State)}", TypeName = "tinyint")]
         [Comment("The state for the category (e.g. 0:Disabled, 1:Enabled, ...).")]
-        public virtual State State { get; set; }
+        public virtual State State { get; protected set; }
         #endregion
 
         #region [ Foreign ]
@@ -133,22 +136,22 @@ namespace Almighty.Mall.Module.Product.Categories
         /// Gets or sets the parent of the category. Null, if this category is root.
         /// </summary>
         [ForeignKey(nameof(ParentId))]
-        public virtual Category Parent { get; set; }
+        public virtual Category Parent { get; protected set; }
 
         /// <summary>
         /// Gets or sets the children of the category.
         /// </summary>
-        public virtual ICollection<Category> Children { get; set; }
+        public virtual ICollection<Category> Children { get; protected set; }
 
         /// <summary>
         /// Gets or sets the links of the category that is linked to all brands.
         /// </summary>
-        public virtual ICollection<CategoryBrand> CategoryBrands { get; set; }
+        public virtual ICollection<CategoryBrand> CategoryBrands { get; protected set; }
 
         /// <summary>
         /// Gets or sets the links of the category that is linked to all attributes.
         /// </summary>
-        public virtual ICollection<AttributeCategory> AttributeCategories { get; set; }
+        public virtual ICollection<AttributeCategory> AttributeCategories { get; protected set; }
         #endregion
 
         #region [ Constructor ]
@@ -173,8 +176,8 @@ namespace Almighty.Mall.Module.Product.Categories
         /// <param name="commissionRate">The commission rate for the category (e.g. 0.01:1%, 0.1:10%, ...).</param>
         /// <param name="description">The description for the category.</param>
         /// <param name="state">The state for the category (e.g. 0:Disabled, 1:Enabled, ...).</param>
-        public Category(            Guid?    seller,
-                                    Category parent,
+        public Category([CanBeNull] Guid?    seller,
+                        [CanBeNull] Category parent,
                         [NotNull]   string   code,
                         [NotNull]   string   name,
                         [NotNull]   string   icon,
@@ -184,47 +187,144 @@ namespace Almighty.Mall.Module.Product.Categories
                         [NotNull]   State    state)
             : this()
         {
-            Check.NotNullOrWhiteSpace(code,        nameof(code));
-            Check.NotNullOrWhiteSpace(name,        nameof(name));
-            Check.NotNullOrWhiteSpace(icon,        nameof(icon));
-            Check.NotNull(commissionRate,          nameof(commissionRate));
-            Check.NotNullOrWhiteSpace(description, nameof(description));
-            Check.NotNull(state,                   nameof(state));
+            this.SetSellerId(seller);
+            this.SetParentId(parent);
+            this.SetCode(code);
+            this.SetName(name);
+            this.SetIcon(icon);
+            this.SetImage(image);
+            this.SetCommissionRate(commissionRate);
+            this.SetDescription(description);
+            this.SetState(state);
+        }
+        #endregion
 
+        #region [ Column Set ]
+        /// <summary>
+        /// Set <see cref="SellerId"/>.
+        /// </summary>
+        /// <param name="seller">The foreign key of the category that is linked to a seller. Null, if this category in platform.</param>
+        public Category SetSellerId([CanBeNull] Guid? seller)
+        {
+            this.SellerId = seller;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="ParentId"/>.
+        /// </summary>
+        /// <param name="spu">The parent of the category. Null, if this category is root.</param>
+        public Category SetParentId([CanBeNull] Category parent)
+        {
+            this.ParentId = parent?.Id;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Code"/>.
+        /// </summary>
+        /// <param name="code">The hierarchical code for the category (e.g. 00001.00042.00005). It's changeable if category hierarch is changed.</param>
+        public Category SetCode([NotNull] string code)
+        {
+            Check.NotNullOrWhiteSpace(code, nameof(code));
             if (code.Length > Category.MAX_CODE_LENGTH)
             {
                 throw new ArgumentException($"{nameof(Category)} {nameof(code)} can not be longer than {Category.MAX_CODE_LENGTH}");
             }
+
+            this.Code = code;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Name"/>.
+        /// </summary>
+        /// <param name="name">The name for the category (e.g. Phone, PC, ...).</param>
+        public Category SetName([NotNull] string name)
+        {
+            Check.NotNullOrWhiteSpace(name, nameof(name));
             if (name.Length > Category.MAX_NAME_LENGTH)
             {
                 throw new ArgumentException($"{nameof(Category)} {nameof(name)} can not be longer than {Category.MAX_NAME_LENGTH}");
             }
+
+            this.Name = name;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Icon"/>.
+        /// </summary>
+        /// <param name="icon">The icon url for the category.</param>
+        public Category SetIcon([NotNull] string icon)
+        {
+            Check.NotNullOrWhiteSpace(icon, nameof(icon));
             if (icon.Length > Category.MAX_ICON_LENGTH)
             {
                 throw new ArgumentException($"{nameof(Category)} {nameof(icon)} can not be longer than {Category.MAX_ICON_LENGTH}");
             }
+
+            this.Icon = icon;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Image"/>.
+        /// </summary>
+        /// <param name="image">The image url for the category.</param>
+        public Category SetImage([CanBeNull] string image)
+        {
             if (image?.Length > Category.MAX_IMAGE_LENGTH)
             {
                 throw new ArgumentException($"{nameof(Category)} {nameof(image)} can not be longer than {Category.MAX_IMAGE_LENGTH}");
             }
+
+            this.Image = image;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="CommissionRate"/>.
+        /// </summary>
+        /// <param name="commissionRate">The commission rate for the category (e.g. 0.01:1%, 0.1:10%, ...).</param>
+        public Category SetCommissionRate([NotNull] decimal commissionRate)
+        {
+            Check.NotNull(commissionRate, nameof(commissionRate));
             if ((commissionRate < decimal.Zero) || ((1M < commissionRate)))
             {
                 throw new ArgumentException($"{nameof(Category)} {nameof(commissionRate)} can not be less than {decimal.Zero} and can not be more than 1");
             }
-            if (description?.Length > Category.MAX_DESCRIPTION_LENGTH)
+
+            this.CommissionRate = commissionRate;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Description"/>.
+        /// </summary>
+        /// <param name="description">The description for the category.</param>
+        public Category SetDescription([NotNull] string description)
+        {
+            Check.NotNullOrWhiteSpace(description, nameof(description));
+            if (description.Length > Category.MAX_DESCRIPTION_LENGTH)
             {
                 throw new ArgumentException($"{nameof(Category)} {nameof(description)} can not be longer than {Category.MAX_DESCRIPTION_LENGTH}");
             }
 
-            this.SellerId       = seller;
-            this.ParentId       = parent?.Id;
-            this.Code           = code;
-            this.Name           = name;
-            this.Icon           = icon;
-            this.Image          = image;
-            this.CommissionRate = commissionRate;
-            this.Description    = description;
-            this.State          = state;
+            this.Description = description;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="State"/>.
+        /// </summary>
+        /// <param name="state">The state for the category (e.g. 0:Disabled, 1:Enabled, ...).</param>
+        public Category SetState([NotNull] State state)
+        {
+            Check.NotNull(state, nameof(state));
+
+            this.State = state;
+            return this;
         }
         #endregion
 

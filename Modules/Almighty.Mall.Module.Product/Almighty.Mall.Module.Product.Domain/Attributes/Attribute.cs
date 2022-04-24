@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using Almighty.Mall.Module.Product.Spus;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -30,38 +31,50 @@ namespace Almighty.Mall.Module.Product.Attributes
         /// <summary>
         /// Gets or sets the foreign key of the attribute that is linked to a seller. Null, if this category in platform.
         /// </summary>
+        [CanBeNull]
         [Column($"{nameof(SellerId)}", TypeName = "uniqueidentifier")]
         [Comment("The foreign key of the attribute that is linked to a seller. Null, if this category in platform.")]
-        public virtual Guid? SellerId { get; set; }
+        public virtual Guid? SellerId { get; protected set; }
 
         /// <summary>
         /// Gets or sets the name for the attribute (e.g. Color, Resolution, ...).
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(Name)}", TypeName = "nvarchar(256)")]
         [Comment("The name for the attribute (e.g. Color, Resolution, ...).")]
         [StringLength(MAX_NAME_LENGTH)]
-        public virtual string Name { get; set; }
+        public virtual string Name { get; protected set; }
 
         /// <summary>
         /// Gets or sets the description for the attribute.
         /// </summary>
+        [CanBeNull]
         [Column($"{nameof(Description)}", TypeName = "nvarchar(256)")]
         [Comment("The description for the attribute.")]
         [StringLength(MAX_DESCRIPTION_LENGTH)]
-        public virtual string Description { get; set; }
+        public virtual string Description { get; protected set; }
         #endregion
 
         #region [ Foreign ]
         /// <summary>
-        /// Gets or sets the links of the attribute that is linked to all categories.
+        /// Gets or sets the links of the attribute that is linked to all attribute categories.
         /// </summary>
-        public virtual ICollection<AttributeCategory> AttributeCategories { get; set; }
+        public virtual ICollection<AttributeCategory> AttributeCategories { get; protected set; }
 
         /// <summary>
-        /// Gets or sets the links of the attribute that is linked to all values.
+        /// Gets or sets the links of the attribute that is linked to all attribute values.
         /// </summary>
-        public virtual ICollection<AttributeValue> AttributeValues { get; set; }
+        public virtual ICollection<AttributeValue> AttributeValues { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the links of the attribute that is linked to all spu attribute values.
+        /// </summary>
+        public virtual ICollection<SpuAttributeValue> SpuAttributeValues { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the links of the attribute that is linked to all spu sku attribute values.
+        /// </summary>
+        public virtual ICollection<SpuSkuAttributeValue> SpuSkuAttributeValues { get; protected set; }
         #endregion
 
         #region [ Constructor ]
@@ -81,25 +94,57 @@ namespace Almighty.Mall.Module.Product.Attributes
         /// <param name="name">The name for the attribute (e.g. Color, Resolution, ...).</param>
         /// <param name="description">The description for the attribute.</param>
         /// <exception cref="ArgumentException"></exception>
-        public Attribute(            Guid?  seller,
+        public Attribute([CanBeNull] Guid?  seller,
                          [NotNull]   string name,
                          [CanBeNull] string description)
             : this()
         {
-            Check.NotNullOrWhiteSpace(name, nameof(name));
+            this.SetSpuId(seller);
+            this.SetName(name);
+            this.SetDescription(description);
+        }
+        #endregion
 
+        #region [ Column Set ]
+        /// <summary>
+        /// Set <see cref="SellerId"/>.
+        /// </summary>
+        /// <param name="seller">The foreign key of the attribute that is linked to a seller. Null, if this category in platform.</param>
+        public Attribute SetSpuId(Guid? seller)
+        {
+            this.SellerId = seller;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Name"/>.
+        /// </summary>
+        /// <param name="name">The name for the attribute (e.g. Color, Resolution, ...).</param>
+        public Attribute SetName([NotNull] string name)
+        {
+            Check.NotNullOrWhiteSpace(name, nameof(name));
             if (name.Length > Attribute.MAX_NAME_LENGTH)
             {
                 throw new ArgumentException($"{nameof(Attribute)} {nameof(name)} can not be longer than {Attribute.MAX_NAME_LENGTH}");
             }
+
+            this.Name = name;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Description"/>.
+        /// </summary>
+        /// <param name="description">The description for the attribute.</param>
+        public Attribute SetDescription([CanBeNull] string description)
+        {
             if (description?.Length > Attribute.MAX_DESCRIPTION_LENGTH)
             {
                 throw new ArgumentException($"{nameof(Attribute)} {nameof(description)} can not be longer than {Attribute.MAX_DESCRIPTION_LENGTH}");
             }
 
-            this.SellerId    = seller;
-            this.Name        = name;
             this.Description = description;
+            return this;
         }
         #endregion
 

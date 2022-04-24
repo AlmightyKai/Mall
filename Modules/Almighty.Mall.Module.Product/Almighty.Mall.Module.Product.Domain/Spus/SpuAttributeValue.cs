@@ -91,19 +91,19 @@ namespace Almighty.Mall.Module.Product.Spus
         /// The foreign key of a spu that is linked to the spu attribute value.
         /// </summary>
         [ForeignKey(nameof(SpuId))]
-        public virtual Spu Spu { get; set; }
+        public virtual Spu Spu { get; protected set; }
 
         /// <summary>
         /// The foreign key of an attribute that is linked to the spu attribute value.
         /// </summary>
         [ForeignKey(nameof(AttributeId))]
-        public virtual Attribute Attribute { get; set; }
+        public virtual Attribute Attribute { get; protected set; }
 
         /// <summary>
         /// The foreign key of an attribute that is linked to the spu attribute value.
         /// </summary>
-        [ForeignKey(nameof(AttributeId))]
-        public virtual AttributeValue AttributeValue { get; set; }
+        [ForeignKey(nameof(AttributeValueId))]
+        public virtual AttributeValue AttributeValue { get; protected set; }
         #endregion
 
         #region [ Constructor ]
@@ -134,12 +134,16 @@ namespace Almighty.Mall.Module.Product.Spus
         {
             this.SetSpuId(spu);
             this.SetAttributeId(attribute);
+            this.SetAttributeName(attributeName);
+            this.SetAttributeValueId(attributeValue);
+            this.SetAttributeValueName(attributeValueName);
+            this.SetDescription(description);
         }
         #endregion
 
         #region [ Column Set ]
         /// <summary>
-        /// Set <see cref="SpuId"/>
+        /// Set <see cref="SpuId"/>.
         /// </summary>
         /// <param name="spu">The foreign key of a spu that is linked to the spu attribute value.</param>
         public SpuAttributeValue SetSpuId([NotNull] Spu spu)
@@ -149,7 +153,7 @@ namespace Almighty.Mall.Module.Product.Spus
         }
 
         /// <summary>
-        /// Set <see cref="AttributeId"/>
+        /// Set <see cref="AttributeId"/>.
         /// </summary>
         /// <param name="attribute">The foreign key of an attribute that is linked to the spu attribute value.</param>
         public SpuAttributeValue SetAttributeId([NotNull] Attribute attribute)
@@ -157,10 +161,75 @@ namespace Almighty.Mall.Module.Product.Spus
             this.AttributeId = Check.NotNull(attribute, nameof(attribute)).Id;
             return this;
         }
+
+        /// <summary>
+        /// Set <see cref="AttributeName"/>.
+        /// </summary>
+        /// <param name="attributeName">The attribute name for the spu attribute value.</param>
+        public SpuAttributeValue SetAttributeName([CanBeNull] string attributeName)
+        {
+            if (attributeName?.Length > SpuAttributeValue.MAX_ATTRIBUTE_NAME_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(SpuAttributeValue)} {nameof(attributeName)} can not be longer than {SpuAttributeValue.MAX_ATTRIBUTE_NAME_LENGTH}");
+            }
+
+            this.AttributeName = attributeName;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="AttributeValueId"/>.
+        /// </summary>
+        /// <param name="attributeValue">The foreign key of an attribute value that is linked to the spu attribute value.</param>
+        public SpuAttributeValue SetAttributeValueId([CanBeNull] AttributeValue attributeValue)
+        {
+            this.AttributeValueId = attributeValue?.Id;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="AttributeValueName"/>.
+        /// </summary>
+        /// <param name="attributeValueName">The attribute value name for the spu attribute value.</param>
+        public SpuAttributeValue SetAttributeValueName([CanBeNull] string attributeValueName)
+        {
+            if (attributeValueName?.Length > SpuAttributeValue.MAX_ATTRIBUTE_VALUE_NAME_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(SpuAttributeValue)} {nameof(attributeValueName)} can not be longer than {SpuAttributeValue.MAX_ATTRIBUTE_VALUE_NAME_LENGTH}");
+            }
+
+            this.AttributeValueName = attributeValueName;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Description"/>.
+        /// </summary>
+        /// <param name="description">The description for the spu attribute value.</param>
+        public SpuAttributeValue SetDescription([CanBeNull] string description)
+        {
+            if (description?.Length > SpuAttributeValue.MAX_DESCRIPTION_LENGTH)
+            {
+                throw new ArgumentException($"{nameof(SpuAttributeValue)} {nameof(description)} can not be longer than {SpuAttributeValue.MAX_DESCRIPTION_LENGTH}");
+            }
+
+            this.Description = description;
+            return this;
+        }
         #endregion
 
         #region [ To String ]
-
+        /// <summary>
+        /// Returns a string that represents the current spu attribute value.
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{nameof(this.Spu)}:{((null != this.Spu) ? this.Spu.Name : this.SpuId)}" +
+                   $" - " +
+                   $"{nameof(this.Attribute)}:{((null != this.Attribute) ? this.Attribute.Name : this.AttributeId)}" +
+                   $" - " +
+                   $"{nameof(this.AttributeValue)}:{((null != this.AttributeValue) ? this.AttributeValue.Value : this.AttributeValueId)}";
+        }
         #endregion
     }
 }

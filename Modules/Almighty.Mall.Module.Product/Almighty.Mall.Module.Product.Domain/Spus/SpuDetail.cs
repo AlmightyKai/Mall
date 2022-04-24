@@ -19,17 +19,18 @@ namespace Almighty.Mall.Module.Product.Spus
         /// Gets or sets the foreign key of a spu that is linked to the spu detail.
         /// </summary>
         [Key]
-        [Required]
+        [NotNull]
         [Column($"{nameof(SpuId)}", TypeName = "uniqueidentifier")]
         [Comment("The foreign key of a spu that is linked to the spu detail.")]
-        public virtual Guid SpuId { get; set; }
+        public virtual Guid SpuId { get; protected set; }
 
         /// <summary>
         /// Gets or sets the detail for the spu detail.
         /// </summary>
+        [CanBeNull]
         [Column($"{nameof(Detail)}", TypeName = "ntext")]
         [Comment("The detail for the spu detail.")]
-        public virtual string Detail { get; set; }
+        public virtual string Detail { get; protected set; }
         #endregion
 
         #region [ Foreign ]
@@ -37,7 +38,7 @@ namespace Almighty.Mall.Module.Product.Spus
         /// Gets or sets the foreign key of a spu that is linked to the spu detail.
         /// </summary>
         [ForeignKey(nameof(SpuId))]
-        public virtual Spu Spu { get; set; }
+        public virtual Spu Spu { get; protected set; }
         #endregion
 
         #region [ Constructor ]
@@ -58,10 +59,30 @@ namespace Almighty.Mall.Module.Product.Spus
         public SpuDetail([NotNull]   Spu    spu,
                          [CanBeNull] string detail)
         {
-            Check.NotNull(spu, nameof(spu));
+            this.SetSpuId(spu);
+            this.SetDetail(detail);
+        }
+        #endregion
 
-            this.SpuId  = spu.Id;
+        #region [ Column Set ]
+        /// <summary>
+        /// Set <see cref="SpuId"/>.
+        /// </summary>
+        /// <param name="spu">The foreign key of a spu that is linked to the spu detail.</param>
+        public SpuDetail SetSpuId([NotNull] Spu spu)
+        {
+            this.SpuId = Check.NotNull(spu, nameof(spu)).Id;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="Detail"/>.
+        /// </summary>
+        /// <param name="detail">The detail for the spu detail.</param>
+        public SpuDetail SetDetail([CanBeNull] string detail)
+        {
             this.Detail = detail;
+            return this;
         }
         #endregion
 

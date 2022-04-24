@@ -19,18 +19,18 @@ namespace Almighty.Mall.Module.Product.Attributes
         /// <summary>
         /// Gets or sets the foreign key of the attribute that is linked to a category.
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(AttributeId)}", TypeName = "uniqueidentifier")]
         [Comment("The foreign key of the attribute that is linked to a category.")]
-        public virtual Guid? AttributeId { get; set; }
+        public virtual Guid? AttributeId { get; protected set; }
 
         /// <summary>
         /// Gets or sets the foreign key of the category that is linked to the attribute.
         /// </summary>
-        [Required]
+        [NotNull]
         [Column($"{nameof(CategoryId)}", TypeName = "uniqueidentifier")]
         [Comment("The foreign key of the category that is linked to the attribute.")]
-        public virtual Guid? CategoryId { get; set; }
+        public virtual Guid? CategoryId { get; protected set; }
         #endregion
 
         #region [ Foreign ]
@@ -38,13 +38,13 @@ namespace Almighty.Mall.Module.Product.Attributes
         /// Gets or sets the foreign key of the attribute that is linked to a category.
         /// </summary>
         [ForeignKey(nameof(AttributeId))]
-        public virtual Attribute Attribute { get; set; }
+        public virtual Attribute Attribute { get; protected set; }
 
         /// <summary>
         /// Gets or sets the foreign key of the category that is linked to the attribute.
         /// </summary>
         [ForeignKey(nameof(CategoryId))]
-        public virtual Category Category { get; set; }
+        public virtual Category Category { get; protected set; }
         #endregion
 
         #region [ Constructor ]
@@ -66,11 +66,30 @@ namespace Almighty.Mall.Module.Product.Attributes
                                  [NotNull] Category  category)
             : this()
         {
-            Check.NotNull(attribute, nameof(attribute));
-            Check.NotNull(category,  nameof(category));
+            this.SetAttributeId(attribute);
+            this.SetCategoryId(category);
+        }
+        #endregion
 
-            this.AttributeId = attribute.Id;
-            this.CategoryId  = category.Id;
+        #region [ Column Set ]
+        /// <summary>
+        /// Set <see cref="AttributeId"/>.
+        /// </summary>
+        /// <param name="attribute">The foreign key of the attribute that is linked to a category.</param>
+        public AttributeCategory SetAttributeId([NotNull] Attribute attribute)
+        {
+            this.AttributeId = Check.NotNull(attribute, nameof(attribute)).Id;
+            return this;
+        }
+
+        /// <summary>
+        /// Set <see cref="CategoryId"/>.
+        /// </summary>
+        /// <param name="category">The foreign key of the category that is linked to the attribute.</param>
+        public AttributeCategory SetCategoryId([NotNull] Category category)
+        {
+            this.CategoryId = Check.NotNull(category, nameof(category)).Id;
+            return this;
         }
         #endregion
 
