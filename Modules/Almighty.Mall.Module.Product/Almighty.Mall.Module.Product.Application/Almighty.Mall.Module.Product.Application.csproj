@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Attributes\" />
     <Folder Include="ShoppingCarts\" />
     <Folder Include="Skus\" />
     <Folder Include="Spus\" />

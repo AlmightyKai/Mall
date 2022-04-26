@@ -8,7 +8,12 @@ namespace Almighty.Mall.Module.Product.Permissions
     {
         public override void Define(IPermissionDefinitionContext context)
         {
-            var myGroup = context.AddGroup(Permissions.GroupName, L("Permission:Product"));
+            PermissionGroupDefinition group = context.AddGroup(Permissions.GroupName, L("Permission:Product"));
+
+            PermissionDefinition attributes = group.AddPermission(Permissions.Attributes.Default, L("Permission:Product.Attribute"));
+            attributes.AddChild(Permissions.Attributes.Create, L("Permission:Product.Attribute.Create"));
+            attributes.AddChild(Permissions.Attributes.Update, L("Permission:Product.Attribute.Edit"));
+            attributes.AddChild(Permissions.Attributes.Delete, L("Permission:Product.Attribute.Delete"));
         }
 
         private static LocalizableString L(string name)
